@@ -1,0 +1,98 @@
+create table KhachHang
+(
+    KhachHangID int identity
+        primary key,
+    HoTen       nvarchar(100) not null,
+    SoDienThoai varchar(15),
+    Email       nvarchar(100),
+    DiaChi      nvarchar(255),
+    NgaySinh    date
+)
+go
+
+create table LichBay
+(
+    LichBayID   int identity
+        primary key,
+    MaChuyenBay nvarchar(10) not null,
+    NoiDi       nvarchar(50),
+    NoiDen      nvarchar(50),
+    NgayGioBay  datetime,
+    SoGhe       int,
+    GiaVe       decimal(18, 2)
+)
+go
+
+create table Role
+(
+    RoleID  int identity
+        primary key,
+    TenRole nvarchar(50) not null
+)
+go
+
+create table TaiKhoan
+(
+    TaiKhoanID  int identity
+        primary key,
+    RoleID      int           not null
+        references Role,
+    TenDangNhap nvarchar(50)  not null
+        unique,
+    MatKhau     nvarchar(255) not null,
+    TrangThai   bit default 1
+)
+go
+
+create table NhanVien
+(
+    NhanVienID  int identity
+        primary key,
+    HoTen       nvarchar(100) not null,
+    SoDienThoai varchar(15),
+    Email       nvarchar(100),
+    DiaChi      nvarchar(255),
+    TaiKhoanID  int           not null
+        references TaiKhoan
+)
+go
+
+create table DonHang
+(
+    DonHangID   int identity
+        primary key,
+    KhachHangID int
+        references KhachHang,
+    NhanVienID  int
+        references NhanVien,
+    NgayTao     datetime default getdate(),
+    TongTien    decimal(18, 2)
+)
+go
+
+create table ThongKe
+(
+    ThongKeID    int identity
+        primary key,
+    NgayThang    datetime,
+    TongDoanhThu decimal(18, 2),
+    SoVeBan      int,
+    SoDonHang    int
+)
+go
+
+create table VeMayBay
+(
+    VeID        int identity
+        primary key,
+    KhachHangID int
+        references KhachHang,
+    LichBayID   int
+        references LichBay,
+    GiaVe       decimal(18, 2),
+    NgayDatVe   datetime default getdate(),
+    TrangThai   nvarchar(50)
+        check ([TrangThai] = 'cancel' OR [TrangThai] = 'done')
+)
+go
+
